@@ -21,7 +21,7 @@ def home(request):
     
     
     
-    return HttpResponse('HOME')
+    return render_to_response("token_home.html", {}, context_instance=RequestContext(request) )
 
 @login_required
 def create(request):
