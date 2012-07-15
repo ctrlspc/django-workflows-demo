@@ -2,7 +2,7 @@
 from django.http import  HttpResponse
 from django.contrib.auth.decorators import login_required
 
-#@login_required
+@login_required
 def home(request):
     '''
         Shows all the tokens that this person has view access too, and gives them other
@@ -16,14 +16,14 @@ def home(request):
     '''
     return HttpResponse('HOME')
 
-#@login_required
+@login_required
 def create(request):
     '''
         Create a new token, for which the logged in user will be the owner
     '''
     return HttpResponse('Create')
 
-#@login_required
+@login_required
 def edit(request, token):
     
     '''
@@ -34,7 +34,7 @@ def edit(request, token):
     return HttpResponse('edit')
 
 
-#@login_required
+@login_required
 def delete(request, token):
     
     '''
@@ -44,7 +44,7 @@ def delete(request, token):
     '''
     return HttpResponse('delete')
 
-#@login_required
+@login_required
 def evaluate(request, token):
     '''
         This will allow you to decide if a token is approved or diapproved.

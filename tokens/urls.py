@@ -4,7 +4,7 @@ Created on Jul 15, 2012
 @author: jasonmarshall
 '''
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 
 
 
