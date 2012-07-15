@@ -27,7 +27,19 @@ def create(request):
 def edit(request, token):
     
     '''
-        Edit the details of a token, you must have edit permission for this object to be able to do this
+        Edit the details of a token.
+        You must have edit permission for this object to be able to do this
+        otherwise you will get a nasty 403 Fobidden error!
+    '''
+    return HttpResponse('edit')
+
+
+#@login_required
+def delete(request, token):
+    
+    '''
+        Delete a token.
+        You must have delete permission for this object to be able to do this
         otherwise you will get a nasty 403 Fobidden error!
     '''
     return HttpResponse('edit')
