@@ -6,6 +6,9 @@ from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
 
+from permissions.models import Role
+from permissions.utils import grant_permission, add_local_role
+
 @login_required
 def home(request):
     '''
@@ -19,9 +22,14 @@ def home(request):
         evaluate (approve/disapprove)
     '''
     
+    user = request.user
     
+    researcher_role = Role.objects.get(name='Researcher')
     
-    return render_to_response("token_home.html", {}, context_instance=RequestContext(request) )
+    #get the tokens that I am the researcher for
+    tokens = [roleRelation.content for roleRelation in user.principalrolerelation_set.filter(role=researcher_role) ]
+    
+    return render_to_response("token_home.html", {'tokens':tokens}, context_instance=RequestContext(request) )
 
 @login_required
 def create(request):
@@ -33,7 +41,21 @@ def create(request):
         form = TokenForm(request.POST)
         
         if form.is_valid():
-            form.save()
+            
+            token = form.save()
+            
+            #set the owner permission of the token to the current user
+            #get the user
+            user = request.user
+            #get the researcher role
+            researcher_role = Role.objects.get(name='Researcher')
+            
+            #grant researcher role , owner permission on the token
+            grant_permission(token, researcher_role, 'owner')
+            #add the user to the local researcher role for this token
+            add_local_role(token, user, researcher_role)
+            
+            
             # redirect to home
             return HttpResponseRedirect(reverse('home_view'))
             

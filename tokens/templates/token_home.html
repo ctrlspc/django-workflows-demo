@@ -5,5 +5,14 @@
 		<title>Tokens</title>
 	</head>
 	
+	<p>My Tokens:</p>
+	
+	<ul>
+		{% for token in tokens %}
+		    <li>{{ token.name }}</li>
+		{% endfor %}
+		
+	</ul>
+	
 	<a href="{% url logout_view %}">Logout!</a>
 </Html>
