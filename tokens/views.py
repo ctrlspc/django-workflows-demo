@@ -1,6 +1,10 @@
 # Create your views here.
-from django.http import  HttpResponse
+from django.http import  HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from tokens.forms import TokenForm
+from django.shortcuts import render_to_response
+from django.core.urlresolvers import reverse
+from django.template.context import RequestContext
 
 @login_required
 def home(request):
@@ -14,6 +18,9 @@ def home(request):
         delete
         evaluate (approve/disapprove)
     '''
+    
+    
+    
     return HttpResponse('HOME')
 
 @login_required
@@ -21,7 +28,21 @@ def create(request):
     '''
         Create a new token, for which the logged in user will be the owner
     '''
-    return HttpResponse('Create')
+    
+    if request.method == "POST":
+        form = TokenForm(request.POST)
+        
+        if form.is_valid():
+            form.save()
+            # redirect to home
+            return HttpResponseRedirect(reverse('home_view'))
+            
+    else:
+        form = TokenForm()
+        
+    return render_to_response("create_token.html", {
+                                                        "form": form,
+                                                    }, context_instance=RequestContext(request) )
 
 @login_required
 def edit(request, token):

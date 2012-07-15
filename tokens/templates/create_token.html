@@ -1,0 +1,17 @@
+<html>
+	
+	<head>
+		<title>Create a new Token</title>
+	</head>
+	<body>
+		
+		
+		<form method="post" action="{% url create_view %}">
+			{% csrf_token %}
+			
+			{{form.as_p}}
+
+			<input type="submit" value='Create'/>
+		</form>
+	</body>
+</html>
