@@ -42,7 +42,7 @@ def delete(request, token):
         You must have delete permission for this object to be able to do this
         otherwise you will get a nasty 403 Fobidden error!
     '''
-    return HttpResponse('edit')
+    return HttpResponse('delete')
 
 #@login_required
 def evaluate(request, token):
