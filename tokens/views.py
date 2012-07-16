@@ -2,12 +2,17 @@
 from django.http import  HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from tokens.forms import TokenForm
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
 
 from permissions.models import Role
-from permissions.utils import grant_permission, add_local_role
+from permissions.utils import add_local_role, has_permission
+
+from workflows.models import Workflow, State
+from workflows.utils import set_workflow, set_state
+from tokens.models import Token
+from django.core.exceptions import PermissionDenied
 
 @login_required
 def home(request):
@@ -55,19 +60,25 @@ def create(request):
             researcher_role = Role.objects.get(name='Researcher')
             supervisor_role = Role.objects.get(name='Supervisor')
             
+            #get the approval workflow
+            approval_workflow = Workflow.objects.get(name='Token_Approval')
             #researcher permissions
-            grant_permission(token, researcher_role, 'owner')
-            grant_permission(token, researcher_role, 'edit')
-            grant_permission(token, researcher_role, 'view')
-            grant_permission(token, researcher_role, 'submit')
+            
+            #PERMISSIONS SHOULD NOW BE HANDLED BY THE WORKFLOW
+            #grant_permission(token, researcher_role, 'owner')
+            #grant_permission(token, researcher_role, 'edit')
+            #grant_permission(token, researcher_role, 'view')
+            #grant_permission(token, researcher_role, 'submit')
             
             #supervisor permissions
-            grant_permission(token, supervisor_role, 'view')
+            #grant_permission(token, supervisor_role, 'view')
             
             #add the user and their supervisor as local roles for this token
             add_local_role(token, user, researcher_role)
             add_local_role(token, supervisor, supervisor_role)
             
+            
+            set_workflow(token, approval_workflow)
             
             # redirect to home
             return HttpResponseRedirect(reverse('home_view'))
@@ -107,3 +118,26 @@ def evaluate(request, token):
         You must have evaluate permission for this token otherwise you will get a nasty 403 Fobidden error.
     '''
     return HttpResponse('evaluate')
+
+@login_required
+def submit(request, token):
+    '''
+        This will submit a given token for approval
+        In order to do this, you must have the submit permission for the token otherwise you will get a nasty 403 Fobidden error.
+    
+    '''
+    #get or 404 the token
+    token_object = get_object_or_404(Token,pk=token)
+    
+    #check that the user has got the submit permission for the token
+    
+    if has_permission(token_object, request.user, 'submit'):
+        
+        awaiting_approval_state = State.objects.get(name='awaiting_approval')
+        set_state(token_object  , awaiting_approval_state)
+    else:
+        raise PermissionDenied()
+    
+    #set the object state to awaiting_approval
+    
+    return HttpResponseRedirect(reverse('home_view'))

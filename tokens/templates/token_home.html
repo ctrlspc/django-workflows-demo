@@ -26,7 +26,7 @@
 		    	{% end_if_has_permission_for_object %}
 		    	
 		    	{% if_has_permission_for_object token submit %}
-		    		<a href="">submit</a>
+		    		<a href="{%  url submit_view token=token.id  %}">submit</a>
 		    	{% else %}
 		    		
 		    	{% end_if_has_permission_for_object %}
