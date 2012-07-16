@@ -10,7 +10,7 @@ from permissions.models import Role
 from permissions.utils import add_local_role, has_permission
 
 from workflows.models import Workflow, State
-from workflows.utils import set_workflow, set_state
+from workflows.utils import set_workflow, set_state, do_transition
 from tokens.models import Token
 from django.core.exceptions import PermissionDenied
 
@@ -115,19 +115,18 @@ def evaluate(request, token, approved):
     
     #check that the user has got the submit permission for the token
     
-    if has_permission(token_object, request.user, 'evaluate'):
+
         
-        if approved:
-            new_state = State.objects.get(name='approved')
-        else:
-            new_state = State.objects.get(name='with_researcher')
-        
-        
-        set_state(token_object  , new_state)
-        
-        
+    if approved:
+        transition_allowed = do_transition(token_object, 'approved', request.user)
     else:
+        transition_allowed = do_transition(token_object, 'rejected', request.user)
+    
+    
+    if not transition_allowed:
         raise PermissionDenied()
+        
+        
    
     return HttpResponseRedirect(reverse('home_view'))
 
@@ -141,13 +140,9 @@ def submit(request, token):
     #get or 404 the token
     token_object = get_object_or_404(Token,pk=token)
     
-    #check that the user has got the submit permission for the token
     
-    if has_permission(token_object, request.user, 'submit'):
-        
-        awaiting_approval_state = State.objects.get(name='awaiting_approval')
-        set_state(token_object  , awaiting_approval_state)
-    else:
+    #attempt the token_submission transition, if not allowed raise permissiondenied!
+    if not do_transition(token_object, 'token_submission', request.user):
         raise PermissionDenied()
     
     #set the object state to awaiting_approval
