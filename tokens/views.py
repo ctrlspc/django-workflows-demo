@@ -112,12 +112,34 @@ def delete(request, token):
     return HttpResponse('delete')
 
 @login_required
-def evaluate(request, token):
+def evaluate(request, token, approved):
     '''
         This will allow you to decide if a token is approved or diapproved.
         You must have evaluate permission for this token otherwise you will get a nasty 403 Fobidden error.
+        
+        
     '''
-    return HttpResponse('evaluate')
+    
+    #get or 404 the token
+    token_object = get_object_or_404(Token,pk=token)
+    
+    #check that the user has got the submit permission for the token
+    
+    if has_permission(token_object, request.user, 'evaluate'):
+        
+        if approved:
+            new_state = State.objects.get(name='approved')
+        else:
+            new_state = State.objects.get(name='with_researcher')
+        
+        
+        set_state(token_object  , new_state)
+        
+        
+    else:
+        raise PermissionDenied()
+   
+    return HttpResponseRedirect(reverse('home_view'))
 
 @login_required
 def submit(request, token):

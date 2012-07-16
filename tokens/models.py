@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from workflows.utils import get_state
 # Create your models here.
 
 
@@ -11,6 +12,10 @@ class Token(models.Model):
     
     def __unicode__(self):
         return "%s, approved?:%s" % (self.name,self.approved )
+    
+    def get_current_state(self):
+        return get_state(self)
+        
     
     
 class SupervisorRelationship(models.Model):

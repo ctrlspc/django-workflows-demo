@@ -15,6 +15,7 @@ urlpatterns = patterns('tokens.views',
     url(r'^edit/(?P<token>\d+)$', 'edit', name='edit_view'),
     url(r'^submit/(?P<token>\d+)$', 'submit', name='submit_view'),
     url(r'^delete/(?P<token>\d+)$', 'delete', name='delete_view'),
-    url(r'^evaluate/(?P<token>\d+)$', 'evaluate', name='evaluate_view'),
+    url(r'^approve/(?P<token>\d+)$', 'evaluate', {'approved':True}, name='approve_view'),
+    url(r'^reject/(?P<token>\d+)$', 'evaluate', {'approved':False}, name='reject_view'),
     
 )
