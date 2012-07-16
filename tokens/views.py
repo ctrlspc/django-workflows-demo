@@ -29,11 +29,11 @@ def home(request):
     
     user = request.user
     
-    researcher_role = Role.objects.get(name='Researcher')
+    token_generator_role = Role.objects.get(name='Token_Generator')
     supervisor_role = Role.objects.get(name='Supervisor')
     
     #get the tokens that I am the researcher for
-    my_tokens = [roleRelation.content for roleRelation in user.principalrolerelation_set.filter(role=researcher_role) ]
+    my_tokens = [roleRelation.content for roleRelation in user.principalrolerelation_set.filter(role=token_generator_role) ]
     supervisee_tokens = [roleRelation.content for roleRelation in user.principalrolerelation_set.filter(role=supervisor_role) ]
     
     
@@ -57,24 +57,14 @@ def create(request):
             user = request.user
             supervisor = user.supervisee.all()[0].supervisor
             #get the researcher and supervisor  roles
-            researcher_role = Role.objects.get(name='Researcher')
+            token_generator_role = Role.objects.get(name='Token_Generator')
             supervisor_role = Role.objects.get(name='Supervisor')
             
             #get the approval workflow
             approval_workflow = Workflow.objects.get(name='Token_Approval')
-            #researcher permissions
-            
-            #PERMISSIONS SHOULD NOW BE HANDLED BY THE WORKFLOW
-            #grant_permission(token, researcher_role, 'owner')
-            #grant_permission(token, researcher_role, 'edit')
-            #grant_permission(token, researcher_role, 'view')
-            #grant_permission(token, researcher_role, 'submit')
-            
-            #supervisor permissions
-            #grant_permission(token, supervisor_role, 'view')
             
             #add the user and their supervisor as local roles for this token
-            add_local_role(token, user, researcher_role)
+            add_local_role(token, user, token_generator_role)
             add_local_role(token, supervisor, supervisor_role)
             
             
