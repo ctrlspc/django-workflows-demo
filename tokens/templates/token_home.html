@@ -44,7 +44,7 @@
 	
 	<ul>
 		{% for token in supervisee_tokens %}
-		    <li>{{ token.name }} {{token.get_current_state}}
+		    <li>{{ token.name }} ({{token.get_current_state.name}})
 		    	
 		    	
 		    	{% if_has_permission_for_object token view %}
@@ -76,6 +76,6 @@
 	
 	</p>
 	
-	
-	<a href="{% url logout_view %}">Logout!</a>
+	<p><a href="{% url create_view %}">Create new token</a></p>
+	<p><a href="{% url logout_view %}">Logout!</a></p>
 </Html>
