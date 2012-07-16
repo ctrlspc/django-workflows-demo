@@ -25,11 +25,14 @@ def home(request):
     user = request.user
     
     researcher_role = Role.objects.get(name='Researcher')
+    supervisor_role = Role.objects.get(name='Supervisor')
     
     #get the tokens that I am the researcher for
-    tokens = [roleRelation.content for roleRelation in user.principalrolerelation_set.filter(role=researcher_role) ]
+    my_tokens = [roleRelation.content for roleRelation in user.principalrolerelation_set.filter(role=researcher_role) ]
+    supervisee_tokens = [roleRelation.content for roleRelation in user.principalrolerelation_set.filter(role=supervisor_role) ]
     
-    return render_to_response("token_home.html", {'tokens':tokens}, context_instance=RequestContext(request) )
+    
+    return render_to_response("token_home.html", {'my_tokens':my_tokens, 'supervisee_tokens':supervisee_tokens}, context_instance=RequestContext(request) )
 
 @login_required
 def create(request):
@@ -44,16 +47,25 @@ def create(request):
             
             token = form.save()
             
-            #set the owner permission of the token to the current user
-            #get the user
+
+            #get the user and supervisor
             user = request.user
-            #get the researcher role
+            supervisor = user.supervisee.all()[0].supervisor
+            #get the researcher and supervisor  roles
             researcher_role = Role.objects.get(name='Researcher')
+            supervisor_role = Role.objects.get(name='Supervisor')
             
-            #grant researcher role , owner permission on the token
+            #researcher permissions
             grant_permission(token, researcher_role, 'owner')
-            #add the user to the local researcher role for this token
+            grant_permission(token, researcher_role, 'edit')
+            grant_permission(token, researcher_role, 'view')
+            
+            #supervisor permissions
+            grant_permission(token, supervisor_role, 'view')
+            
+            #add the user and their supervisor as local roles for this token
             add_local_role(token, user, researcher_role)
+            add_local_role(token, supervisor, supervisor_role)
             
             
             # redirect to home

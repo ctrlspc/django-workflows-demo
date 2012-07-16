@@ -5,14 +5,28 @@
 		<title>Tokens</title>
 	</head>
 	
-	<p>My Tokens:</p>
+	<p>My Tokens:
 	
 	<ul>
-		{% for token in tokens %}
+		{% for token in my_tokens %}
 		    <li>{{ token.name }}</li>
 		{% endfor %}
 		
 	</ul>
+	
+	</p>
+	
+	<p>My Supervisee Tokens:
+	
+	<ul>
+		{% for token in supervisee_tokens %}
+		    <li>{{ token.name }}</li>
+		{% endfor %}
+		
+	</ul>
+	
+	</p>
+	
 	
 	<a href="{% url logout_view %}">Logout!</a>
 </Html>
