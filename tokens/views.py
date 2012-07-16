@@ -59,6 +59,7 @@ def create(request):
             grant_permission(token, researcher_role, 'owner')
             grant_permission(token, researcher_role, 'edit')
             grant_permission(token, researcher_role, 'view')
+            grant_permission(token, researcher_role, 'submit')
             
             #supervisor permissions
             grant_permission(token, supervisor_role, 'view')

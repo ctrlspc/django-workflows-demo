@@ -6,7 +6,7 @@ Created on 16 Jul 2012
 
 from django import template
 from permissions.utils import has_permission
-#compilation function
+
 register = template.Library()
 
 class HasPermissionForObjectNode(template.Node):
@@ -61,7 +61,7 @@ class HasPermissionForObjectNode(template.Node):
 @register.tag(name='if_has_permission_for_object')
 def do_has_permission_for_object(parser, token):
     return HasPermissionForObjectNode.handle_token(parser, token)
-#the renderer
+
 
 
                             
