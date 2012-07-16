@@ -13,14 +13,16 @@
     "pk" : 3
   },
   { "fields" : { "name" : "awaiting_approval",
-        "transitions" : [  ],
+        "transitions" : [ 2,
+            3
+          ],
         "workflow" : 1
       },
     "model" : "workflows.state",
     "pk" : 2
   },
   { "fields" : { "name" : "with_researcher",
-        "transitions" : [  ],
+        "transitions" : [ 1 ],
         "workflow" : 1
       },
     "model" : "workflows.state",
@@ -29,7 +31,7 @@
   { "fields" : { "condition" : "",
         "destination" : 2,
         "name" : "token_submission",
-        "permission" : null,
+        "permission" : 5,
         "workflow" : 1
       },
     "model" : "workflows.transition",
@@ -38,7 +40,7 @@
   { "fields" : { "condition" : "",
         "destination" : 3,
         "name" : "approved",
-        "permission" : null,
+        "permission" : 4,
         "workflow" : 1
       },
     "model" : "workflows.transition",
@@ -47,13 +49,12 @@
   { "fields" : { "condition" : "",
         "destination" : 1,
         "name" : "rejected",
-        "permission" : null,
+        "permission" : 4,
         "workflow" : 1
       },
     "model" : "workflows.transition",
     "pk" : 3
   },
-  
   { "fields" : { "permission" : 1,
         "workflow" : 1
       },
