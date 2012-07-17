@@ -10,7 +10,7 @@ class Token(models.Model):
     name = models.CharField(max_length=100)
     
     def __unicode__(self):
-        return "%s, approved?:%s" % (self.name,self.approved )
+        return "%s, current state:%s" % (self.name, self.get_current_state())
     
     def get_current_state(self):
         return get_state(self)
