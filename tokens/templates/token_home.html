@@ -14,22 +14,17 @@
 		    <li>{{ token.name }} ({{token.get_current_state.name}})
 		    	{% if_has_permission_for_object token view %}
 		    		<a href="">view</a>
-		    	{% else %}
-		    		
 		    	{% end_if_has_permission_for_object %}
 		    	
 		    	
 		    	{% if_has_permission_for_object token edit %}
 		    		<a href="">edit</a>
-		    	{% else %}
-		    		
 		    	{% end_if_has_permission_for_object %}
 		    	
-		    	{% if_has_permission_for_object token submit %}
+		    	
+		    	{% can_make_transition token token_submission %}
 		    		<a href="{%  url submit_view token=token.id  %}">submit</a>
-		    	{% else %}
-		    		
-		    	{% end_if_has_permission_for_object %}
+		    	{% end_can_make_transition %}
 		    	
 		    </li>
 		{% endfor %}
@@ -49,23 +44,21 @@
 		    	
 		    	{% if_has_permission_for_object token view %}
 		    		<a href="">view</a>
-		    	{% else %}
-		    		
 		    	{% end_if_has_permission_for_object %}
 		    	
 		    	
 		    	{% if_has_permission_for_object token edit %}
 		    		<a href="">edit</a>
-		    	{% else %}
-		    		
 		    	{% end_if_has_permission_for_object %}
 		    	
-		    	{% if_has_permission_for_object token evaluate %}
+		    	
+		    	{% can_make_transition token approved %}
 		    		<a href="{%  url approve_view token=token.id  %}">approve</a>
+		    	{% end_can_make_transition %}
+		    	
+		    	{% can_make_transition token rejected %}
 		    		<a href="{%  url reject_view token=token.id  %}">reject</a>
-		    	{% else %}
-		    		
-		    	{% end_if_has_permission_for_object %}
+		    	{% end_can_make_transition %}
 			    	
 		    </li>
 		{% endfor %}
