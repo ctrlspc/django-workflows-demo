@@ -5,13 +5,22 @@
 	</head>
 	<body>
 		
-		
+		{% if not edit_mode %}
 		<form method="post" action="{% url create_view %}">
 			{% csrf_token %}
 			
 			{{form.as_p}}
 
 			<input type="submit" value='Create'/>
+			
+		{% else %}
+		<form method="post" action="{% url edit_view token=token.id%}">
+			{% csrf_token %}
+			
+			{{form.as_p}}
+
+			<input type="submit" value='Edit'/>
+		{% endif %}
 		</form>
 	</body>
 </html>

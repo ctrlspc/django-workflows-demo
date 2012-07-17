@@ -76,30 +76,53 @@ def create(request):
     else:
         form = TokenForm()
         
-    return render_to_response("create_token.html", {
-                                                        "form": form,
-                                                    }, context_instance=RequestContext(request) )
+    return render_to_response("create_token.html", {"form": form,'edit':False,}, context_instance=RequestContext(request) )
 
 @login_required
-def edit(request, token):
+def view(request, token):
     
     '''
         Edit the details of a token.
         You must have edit permission for this object to be able to do this
         otherwise you will get a nasty 403 Fobidden error!
     '''
+    token_object = get_object_or_404(Token,pk=token)
+    if has_permission(token_object, request.user, 'edit'):
+        return render_to_response("token_view.html", {"token": token_object,}, context_instance=RequestContext(request) )
+    else:
+        raise PermissionDenied()
+    
     return HttpResponse('edit')
 
 
 @login_required
-def delete(request, token):
+def edit(request, token):
     
     '''
-        Delete a token.
-        You must have delete permission for this object to be able to do this
+        View a token.
+        You must have view permission for this object to be able to do this
         otherwise you will get a nasty 403 Fobidden error!
     '''
-    return HttpResponse('delete')
+    
+    #get or 404 the token
+    token_object = get_object_or_404(Token,pk=token)
+    if has_permission(token_object, request.user, 'view'):
+        if request.method == "POST":
+            form = TokenForm(request.POST, instance=token_object)
+            
+            if form.is_valid():
+                
+                token = form.save()
+                
+                # redirect to home
+                return HttpResponseRedirect(reverse('home_view'))
+                
+        else:
+            form = TokenForm(instance=token_object)
+            
+        return render_to_response("create_token.html", {"form": form,'edit_mode':True, 'token':token_object}, context_instance=RequestContext(request) )
+    else:
+        raise PermissionDenied()
 
 @login_required
 def evaluate(request, token, approved):

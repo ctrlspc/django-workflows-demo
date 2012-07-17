@@ -1,0 +1,17 @@
+<p><h2>Token:</h2> {{token.name}}</p>
+<p>
+	<h2>Token Generators:</h2>
+	
+	{%for user in token.get_token_generators %}
+		{{user.username}}
+	{% endfor%}
+	
+</p>
+<p>
+	<h2>Token Supervisors:</h2>
+	{%for user in token.get_token_supervisor %}
+		{{user.username}}
+	{% endfor%}
+</p>
+
+<a href="{%  url home_view   %}">Home</a>

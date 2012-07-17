@@ -13,12 +13,12 @@
 		{% for token in my_tokens %}
 		    <li>{{ token.name }} ({{token.get_current_state.name}})
 		    	{% if_has_permission_for_object token view %}
-		    		<a href="">view</a>
+		    		<a href="{%  url token_view token=token.id  %}">view</a>
 		    	{% end_if_has_permission_for_object %}
 		    	
 		    	
 		    	{% if_has_permission_for_object token edit %}
-		    		<a href="">edit</a>
+		    		<a href="{%  url edit_view token=token.id  %}">edit</a>
 		    	{% end_if_has_permission_for_object %}
 		    	
 		    	
